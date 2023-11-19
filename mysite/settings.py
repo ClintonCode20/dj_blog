@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-552!sbp8=_)072$8_#z1u4bw9%z@hb!ci5ml%xu(2j$$ehz4!4
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["161.35.120.232", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["myblog-xphi.onrender.com", "127.0.0.1", "localhost"]
 
 
 
