@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -39,8 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blogapp',
-    
-    
+    'storages' #newly added
 ]
 
 MIDDLEWARE = [
@@ -124,11 +124,36 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT =BASE_DIR/'static'
+SPACES = config('SPACES') == 'TRUE'
+if SPACES:
+    
+    AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = 'djbuck'
+    AWS_S3_ENDPOINT_URL = 'https://djbuck.nyc3.digitaloceanspaces.com'
 
-MEDIA_URL = "img/"
-MEDIA_ROOT = BASE_DIR/'media'
+    AWS_S3_OBJECT_PARAMETERS = {
+        "CacheControl": "max-age=86400",
+    }
+
+    AWS_DEFAULT_ACL = 'public-read'
+    AWS_S3_REGION_NAME = "nyc3"
+    
+    #static settings
+    AWS_LOCATION = 'static'
+    STATIC_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_LOCATION}/'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    
+     # media settings
+    MEDIA_LOCATION = 'media'
+    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{MEDIA_LOCATION}/'
+    DEFAULT_FILE_STORAGE = 'mysite.spaces.MediaStorage'
+  
+else:
+    STATIC_URL = '/static/'
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
+    MEDIA_URL = "img/"
+    MEDIA_ROOT = BASE_DIR/'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
