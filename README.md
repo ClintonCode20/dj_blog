@@ -1,2 +1,2 @@
-# k_blog
-The blog is a test app for Kunle.
+# dj_blog
+This is a simple blog built with Django web framework
